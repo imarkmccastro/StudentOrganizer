@@ -116,6 +116,10 @@ class NotesViewController: UIViewController,
             guard let destination = segue.destination as? NoteFormViewController
             else { return }
             destination.subject = subject
+        case "ShowNoteDetailSegue":
+            guard let destination = segue.destination as? NoteDetailViewController,
+                  let note = sender as? Note else { return }
+            destination.note = note
         default:
             break
         }
