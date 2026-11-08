@@ -144,6 +144,10 @@ class TasksViewController: UITableViewController {
             else { return }
             destination.subject = subject
             destination.taskToEdit = sender as? TaskItem // nil when adding a new task
+        case "ShowNotesSegue":
+            guard let destination = segue.destination as? NotesViewController
+            else { return }
+            destination.subject = subject
         default:
             break
         }
