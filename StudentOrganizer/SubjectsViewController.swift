@@ -88,4 +88,21 @@ class SubjectsViewController: UITableViewController {
         tableView.backgroundView = subjects.isEmpty
         ? emptyStateLabel("No subjects yet.\nTap + to add one.") : nil
     }
+
+    // MARK: - Table view delegate: open the tapped subject
+    override func tableView(_ tableView: UITableView,
+                            didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        // sender: the Subject that was tapped. prepare(for:sender:) receives it.
+        performSegue(withIdentifier: "ShowTasksSegue",
+                     sender: subjects[indexPath.row])
+    }
+
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "ShowTasksSegue",
+              let destination = segue.destination as? TasksViewController,
+              let subject = sender as? Subject else { return }
+        destination.subject = subject // hand the chosen subject to the next screen
+    }
 }
