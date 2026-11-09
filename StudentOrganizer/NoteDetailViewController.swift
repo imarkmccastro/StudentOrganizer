@@ -1,19 +1,21 @@
 import UIKit
 import CoreData
 
-/// Displays a note in full detail: date, text, and full-resolution photo (if attached).
-/// Allows the user to delete the note with confirmation.
+/// Full-detail view for an individual Note.
+/// Displays high-resolution note imagery (or placeholder icon), formatted date/time,
+/// full note description, and a destructive delete action with user confirmation.
 class NoteDetailViewController: UIViewController {
 
-    // MARK: - Data passed in from NotesViewController
+    // MARK: - Injected Properties
+    /// The target Note entity to display and potentially delete.
     var note: Note?
 
-    // MARK: - Outlets
+    // MARK: - Interface Builder Outlets
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var noteLabel: UILabel!
 
-    // MARK: - View life cycle
+    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Note"
@@ -22,6 +24,7 @@ class NoteDetailViewController: UIViewController {
         noteLabel.text = note.text
         dateLabel.text = note.createdAt?.formatted(date: .long, time: .shortened)
 
+        // Show photo full width if available, or fall back to system symbol
         if let data = note.photoData, let image = UIImage(data: data) {
             photoImageView.image = image
             photoImageView.contentMode = .scaleAspectFit
@@ -32,20 +35,28 @@ class NoteDetailViewController: UIViewController {
         }
     }
 
-    // MARK: - Actions
+    // MARK: - User Actions
+    /// Prompts the user with a confirmation alert before permanently deleting the note from Core Data.
     @IBAction func deleteTapped(_ sender: UIButton) {
-        // Ask first: deleting cannot be undone.
+        // Confirmation alert prevents accidental data loss
         let alert = UIAlertController(title: "Delete this note?",
                                       message: "This cannot be undone.",
                                       preferredStyle: .alert)
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {
             [weak self] _ in
             guard let self = self, let note = self.note else { return }
+
+            // Nullify delete rule on Note ensures deleting this note does not delete the parent Subject
             CoreDataStack.shared.context.delete(note)
             CoreDataStack.shared.save()
+
+            // Return to the notes collection grid
             self.navigationController?.popViewController(animated: true)
         }
+
         alert.addAction(deleteAction)
         present(alert, animated: true)
     }

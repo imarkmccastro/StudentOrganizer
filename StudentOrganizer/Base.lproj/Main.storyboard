@@ -65,7 +65,7 @@
         <!--Tasks View Controller-->
         <scene sceneID="SCN-tsk-001">
             <objects>
-                <tableViewController id="TSK-sc-001" customClass="TasksViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="TasksVC" id="TSK-sc-001" customClass="TasksViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="TSK-tbl-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -127,7 +127,7 @@
         <!--Task Form View Controller-->
         <scene sceneID="SCN-frm-001">
             <objects>
-                <viewController id="FRM-sc-001" customClass="TaskFormViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TaskFormVC" id="FRM-sc-001" customClass="TaskFormViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FRM-vw-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -231,7 +231,7 @@
         <!--Notes View Controller-->
         <scene sceneID="SCN-nte-001">
             <objects>
-                <viewController id="NTE-sc-001" customClass="NotesViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NotesVC" id="NTE-sc-001" customClass="NotesViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NTE-vw-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -314,7 +314,7 @@
         <!--Note Form View Controller-->
         <scene sceneID="SCN-nf-001">
             <objects>
-                <viewController id="NF-sc-001" customClass="NoteFormViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NoteFormVC" id="NF-sc-001" customClass="NoteFormViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NF-vw-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -390,7 +390,7 @@
         <!--Note Detail View Controller-->
         <scene sceneID="SCN-nd-001">
             <objects>
-                <viewController id="ND-sc-001" customClass="NoteDetailViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NoteDetailVC" id="ND-sc-001" customClass="NoteDetailViewController" customModule="StudentOrganizer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ND-vw-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

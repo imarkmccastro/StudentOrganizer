@@ -1,52 +1,89 @@
-//
-//  SceneDelegate.swift
-//  StudentOrganizer
-//
-//  Created by MARK BENEDICT CASTRO on 10/26/26.
-//
-
 import UIKit
+import CoreData
 
+/// Manages the application's UI lifecycle and window scene state.
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+
+        // Handles optional launch arguments for automated UI navigation verification and screenshot generation
+        if let screenArg = CommandLine.arguments.first(where: { $0.starts(with: "--screen=") }) {
+            let screenName = screenArg.replacingOccurrences(of: "--screen=", with: "")
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            guard let nav = window?.rootViewController as? UINavigationController else { return }
+
+            let context = CoreDataStack.shared.context
+            let subjectReq = NSFetchRequest<Subject>(entityName: "Subject")
+            subjectReq.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            let subjects = (try? context.fetch(subjectReq)) ?? []
+            let targetSubject = subjects.first(where: { $0.name == "Mobile App Development 2" }) ?? subjects.first
+
+            switch screenName {
+            case "tasks":
+                if let tasksVC = storyboard.instantiateViewController(withIdentifier: "TasksVC") as? TasksViewController {
+                    tasksVC.subject = targetSubject
+                    nav.pushViewController(tasksVC, animated: false)
+                }
+
+            case "taskform":
+                if let tasksVC = storyboard.instantiateViewController(withIdentifier: "TasksVC") as? TasksViewController,
+                   let formVC = storyboard.instantiateViewController(withIdentifier: "TaskFormVC") as? TaskFormViewController {
+                    tasksVC.subject = targetSubject
+                    formVC.subject = targetSubject
+                    nav.setViewControllers([nav.viewControllers[0], tasksVC, formVC], animated: false)
+                }
+
+            case "notes":
+                if let tasksVC = storyboard.instantiateViewController(withIdentifier: "TasksVC") as? TasksViewController,
+                   let notesVC = storyboard.instantiateViewController(withIdentifier: "NotesVC") as? NotesViewController {
+                    tasksVC.subject = targetSubject
+                    notesVC.subject = targetSubject
+                    nav.setViewControllers([nav.viewControllers[0], tasksVC, notesVC], animated: false)
+                }
+
+            case "noteform":
+                if let tasksVC = storyboard.instantiateViewController(withIdentifier: "TasksVC") as? TasksViewController,
+                   let notesVC = storyboard.instantiateViewController(withIdentifier: "NotesVC") as? NotesViewController,
+                   let noteFormVC = storyboard.instantiateViewController(withIdentifier: "NoteFormVC") as? NoteFormViewController {
+                    tasksVC.subject = targetSubject
+                    notesVC.subject = targetSubject
+                    noteFormVC.subject = targetSubject
+                    nav.setViewControllers([nav.viewControllers[0], tasksVC, notesVC, noteFormVC], animated: false)
+                }
+
+            case "notedetail":
+                if let tasksVC = storyboard.instantiateViewController(withIdentifier: "TasksVC") as? TasksViewController,
+                   let notesVC = storyboard.instantiateViewController(withIdentifier: "NotesVC") as? NotesViewController,
+                   let noteDetailVC = storyboard.instantiateViewController(withIdentifier: "NoteDetailVC") as? NoteDetailViewController {
+                    tasksVC.subject = targetSubject
+                    notesVC.subject = targetSubject
+
+                    let noteReq = NSFetchRequest<Note>(entityName: "Note")
+                    if let target = targetSubject {
+                        noteReq.predicate = NSPredicate(format: "subject == %@", target)
+                    }
+                    noteReq.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+                    let notes = (try? context.fetch(noteReq)) ?? []
+                    noteDetailVC.note = notes.first(where: { $0.photoData != nil }) ?? notes.first
+
+                    nav.setViewControllers([nav.viewControllers[0], tasksVC, notesVC, noteDetailVC], animated: false)
+                }
+
+            default:
+                break
+            }
+        }
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
-    }
-
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
-
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-    }
-
+    func sceneDidDisconnect(_ scene: UIScene) {}
+    func sceneDidBecomeActive(_ scene: UIScene) {}
+    func sceneWillResignActive(_ scene: UIScene) {}
+    func sceneWillEnterForeground(_ scene: UIScene) {}
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+        // Persist any outstanding Core Data changes when backgrounding
+        CoreDataStack.shared.save()
     }
-
-
 }
-
